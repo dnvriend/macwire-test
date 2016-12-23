@@ -16,6 +16,11 @@
 
 package com.github.dnvriend
 
-import org.scalatest.{ FlatSpec, Matchers, TryValues }
+import scala.util.Try
 
-abstract class TestSpec extends FlatSpec with Matchers with TryValues
+class RegisterFacade(personRepository: PersonRepository, addressRepository: AddressRepository) {
+  def register(name: String, age: Int, street: String, housenr: Int, zipcode: String): Try[String] = for {
+    _ <- Try(personRepository.save(name, age))
+    _ <- Try(addressRepository.save(street, housenr, zipcode))
+  } yield "registered"
+}

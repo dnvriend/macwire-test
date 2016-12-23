@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package com.github.dnvriend
+package com.github.dnvriend.tests.simple
 
-import org.scalatest.{ FlatSpec, Matchers, TryValues }
+import com.github.dnvriend._
+import com.softwaremill.macwire._
 
-abstract class TestSpec extends FlatSpec with Matchers with TryValues
+class SimpleWireTest extends TestSpec {
+  it should "wire the facade" in {
+    lazy val dbApi = wire[DBApi]
+    lazy val addressRepo = wire[AddressRepository]
+    lazy val personRepo = wire[PersonRepository]
+    lazy val regFacade = wire[RegisterFacade]
+    regFacade.register("foo", 42, "bar", 42, "baz").success.value shouldBe "registered"
+  }
+}

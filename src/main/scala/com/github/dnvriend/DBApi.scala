@@ -16,6 +16,4 @@
 
 package com.github.dnvriend
 
-import org.scalatest.{ FlatSpec, Matchers, TryValues }
-
-abstract class TestSpec extends FlatSpec with Matchers with TryValues
+class DBApi

@@ -16,6 +16,10 @@
 
 package com.github.dnvriend
 
-import org.scalatest.{ FlatSpec, Matchers, TryValues }
+final case class Address(id: Long, street: String, housenr: Int, zipcode: String)
 
-abstract class TestSpec extends FlatSpec with Matchers with TryValues
+class AddressRepository(db: DBApi) {
+  def save(street: String, housenr: Int, zipcode: String): Unit = ()
+  def getAll: List[Address] = List.empty[Address]
+  def findById(id: Long): Option[Address] = Option.empty[Address]
+}
