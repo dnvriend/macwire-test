@@ -413,7 +413,13 @@ I'm not going to explain macwire as Adam Warski already has done that perfectly 
 - [Cake pattern in depth - Mark Harrison](http://www.cakesolutions.net/teamblogs/2011/12/19/cake-pattern-in-depth)
 
 ## Video
-- [The no-framework Scala Dependency Injection Framework - Adam Waski](https://www.youtube.com/watch?v=JwKSUcXG7nw)
-- [Hands-on Dotty - Dmitry Petrashko](https://www.youtube.com/watch?v=aftdOFuVU1o)
+- [(0'52 hr) Scala Macros: What Are They, How Do They Work, and Who Uses Them? - Adam Warski](https://www.youtube.com/watch?v=iZjedoeOL00)
+- [(0'47 hr) The no-framework Scala Dependency Injection Framework - Adam Warski](https://www.youtube.com/watch?v=JwKSUcXG7nw)
+- [(0'34 hr) Macwire - Framework-less Scala Dependency Injection framework - Adam Waski](https://www.youtube.com/watch?v=n8a0A-m1w_c)
+- [(0'27 hr) Approaches to Dependency Injection in Scala - Dave Gurnell](https://www.youtube.com/watch?v=OJe0Dm3t5wQ)
+- [(1'06 hr) Implementing the Reactive Manifesto with Akka - Adam Warski](https://www.youtube.com/watch?v=LXEhQPEupX8)
+- [(1'02 hr) Simple, fast & agile REST with Spray.io - Adam Warski](https://www.youtube.com/watch?v=XPuOlpWEvmw)
+- [(0'59 hr) Streams: reactive? functional? Or: akka- & scalaz- streams side-by-side? - Adam Warski](https://www.youtube.com/watch?v=pXj5Q8KsXX0)
+- [(0'39 hr) Transactional Event Sourcing using Slick audit log for free - Adam Warski](https://www.youtube.com/watch?v=RGqr1cXjS5o)
 
 Have fun!
