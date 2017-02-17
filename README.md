@@ -363,6 +363,137 @@ Using lazy vals without giving it any more thought can lead to:
 - deadlock on concurrent access of lazy vals without cycle
 - deadlock in combination with other synchronization constructs
 
+### Lazy val and safe forward references
+Lazy vals are used for safe forward references, for example, the following code:
+
+```scala
+case class Foo()
+case class Bar()
+case class Quz(foo: Foo, bar: Bar)
+
+val quz = Quz(foo, bar)
+val bar = Bar()
+val foo = Foo()
+
+defined class Foo
+defined class Bar
+defined class Quz
+quz: Quz = Quz(null,null)
+bar: Bar = Bar()
+foo: Foo = Foo()
+```
+
+Here foo and bar are forward referenced, and are not yet initialized so the Scala compiler will initialize them with
+the [scala.Null](http://www.scala-lang.org/api/current/scala/Null.html)reference.
+
+We can fix this by marking `bar` and `foo` as lazy:
+
+```scala
+case class Foo()
+case class Bar()
+case class Quz(foo: Foo, bar: Bar)
+
+val quz = Quz(foo, bar)
+lazy val bar = Bar()
+lazy val foo = Foo()
+
+defined class Foo
+defined class Bar
+defined class Quz
+quz: Quz = Quz(Foo(),Bar())
+bar: Bar = <lazy>
+foo: Foo = <lazy>
+```
+
+### Lazy val deadlock problem
+The lazy val deadlock problem is introduced when we have a cyclic dependency so a dependency that goes both ways when using
+lazy vals. For example, say we have a Foo that depends on Bar and we have a Bar that depends on Foo so Foo <-> Bar:
+
+```scala
+case class Foo(b: Bar)
+case class Bar(f: Foo)
+
+lazy val foo: Foo = Foo(bar)
+lazy val bar: Bar = Bar(foo)
+
+defined class Foo
+defined class Bar
+foo: Foo = <lazy>
+bar: Bar = <lazy>
+```
+
+Everything seems fine, until we access a member of either of them:
+
+```scala
+scala> foo.b
+java.lang.StackOverflowError
+ at ....
+```
+
+or
+
+```scala
+scala> bar.f
+java.lang.StackOverflowError
+  at ...
+```
+
+The best ways to fix this is by breaking the cyclic dependency, the Foo <-> Bar dependency. We can do that by introducing
+a third type, lets call it Quz and put it between the two so Foo <- Quz -> Bar which means:
+
+```scala
+case class Foo()
+case class Bar()
+case class Quz(b: Bar, f: Foo)
+
+lazy val quz: Quz = Quz(bar, foo)
+lazy val foo: Foo = Foo()
+lazy val bar: Bar = Bar()
+```
+
+Of course that means that we also have refactored the code in Foo and in Bar so that the logic that caused the cyclic dependency
+is now in Quz. This of course means some refactoring and a change to our model. This goes to show how important it is to not
+start coding immediately and first create a model...
+
+Now its safe to call quz.b
+
+```scala
+scala> quz.b
+res0: Bar = Bar()
+```
+
+Of course, cyclic dependencies are sometimes bad, like with object graphs as we saw here, and sometimes a good thing like when
+creating a virtual object graph when referencing eg. entities by UUID when we want to reference an ID in
+another DDD bounded context for example.
+
+### Macwire lazy val initialization
+When using macwire, the macwire macro can help us wiring the object graph together. We will use a combination of modeling
+our object graph avoiding cyclic dependencies and using constructor parameters for classes. We don't have to bother ourselves
+with the number of constructor arguments or the sequence in which they are defined:
+
+Of course we need a dependency to macwire so the following must be in your `build.sbt`:
+
+```bash
+echo 'scalaVersion := "2.12.1"' >> build.sbt
+echo 'libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"' >> build.sbt
+```
+
+Now we can use macwire eg. in the REPL so launch it typing `sbt console`:
+
+```scala
+:paste
+class Foo()
+class Bar()
+class Quz(val f: Foo, val b: Bar)
+
+lazy val quz: Quz = wire[Quz]
+lazy val foo: Foo = wire[Foo]
+lazy val bar: Bar = wire[Bar]
+
+scala> quz.b
+res0: Bar = Bar@9542531
+```
+
 ## Cake Pattern Light
 A [cake](https://en.wikipedia.org/wiki/Cake) is a form of sweet dessert that is typically baked. In its oldest forms,
 cakes were modifications of breads, but cakes now cover a wide range of preparations that can be simple or elaborate,

@@ -6,23 +6,9 @@ version := "1.0.0"
 
 scalaVersion := "2.11.8"
 
-// functional and typelevel programming
-// https://github.com/scalaz/scalaz
-libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.8"
-// https://github.com/mpilquist/simulacrum
-libraryDependencies += "com.github.mpilquist" %% "simulacrum" % "0.10.0"
-// https://github.com/milessabin/shapeless
-//libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.2"
-
 // compile-time DI (only used at compile-time so in "provided" scope)
-libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.2.5" % "provided"
+libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 
-// testing
-// https://github.com/typelevel/scalaz-scalatest
-libraryDependencies += "org.typelevel" %% "scalaz-scalatest" % "1.1.1" % Test
-// https://www.playframework.com/documentation/2.5.x/ScalaTestingWithScalaTest#Mockito  
-//libraryDependencies += "org.mockito" % "mockito-core" % "2.2.21" % Test
-// https://github.com/scalatest/scalatest
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1"
 
 // testing configuration
